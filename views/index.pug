@@ -1,5 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+
+  form(action="/add", method='POST')
+    .contentBox
+      .contentBoxTitle
+        label(for="title") Post title: 
+        input(name="title" id="title")
+      .contentBoxText
+        textarea(name="text", id="text", cols="30", rows="10") 
+    input(type="submit" value="Post")
+
+  each value in data
+    .contentBox
+      .contentBoxTitle
+        p #{value.blog_title}
+      .contentBoxText
+        p #{value.blog_txt}

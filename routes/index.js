@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
         (err, rows) => {
           if (rows.length === 1) {
             console.log("Table exists!");
-            db.all(` select blog_id, blog_txt from blog`, (err, rows) => {
+            db.all(` select blog_id, blog_title, blog_txt from blog`, (err, rows) => {
               console.log("returning " + rows.length + " records");
               res.render('index', { title: 'Express', data: rows });
             });
@@ -51,8 +51,10 @@ router.get('/', function (req, res, next) {
 });
 
 function sanitizer(text){
-  if(text.toLowerCase().includes("drop table"))
-    return "Nice Try";
+  let value = text.toLowerCase();
+  console.log(value);
+  if(value.includes("drop table"))
+    return "Nice try";
   return text;
 }
 
@@ -72,8 +74,8 @@ router.post('/add', (req, res, next) => {
       //Try and figure out how why this is unsafe and how to fix it.
       //HINT: the answer is in the XKCD comic on the home page little bobby tables :)
 
-      let title = sanitizer(req.body.blog_title);
-      let text = sanitizer(req.body.blog_txt)
+      let title = sanitizer(req.body.title);
+      let text = sanitizer(req.body.text)
       db.exec(`insert into blog (blog_title, blog_txt)
                 values ('${title}', '${text}');`)
       //redirect to homepage
