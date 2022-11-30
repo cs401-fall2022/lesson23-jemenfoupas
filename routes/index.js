@@ -18,26 +18,15 @@ router.get('/', function (req, res, next) {
             console.log("Table exists!");
             db.all(` select blog_id, blog_title, blog_txt from blog`, (err, rows) => {
               console.log("returning " + rows.length + " records");
-              res.render('index', { title: 'Express', data: rows });
+              res.render('index', { title: 'Express', data: rows.reverse() });
             });
           } else {
-            // console.log("Creating table and inserting some sample data");
-            // db.exec(`create table blog (
-            //          blog_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            //          blog_title text NOT NULL),
-            //          blog_txt text NOT NULL);
-            //           insert into blog (blog_title, blog_txt)
-            //           values ('This is a great blog', 'Oh my goodness blogging is fun');`,
-            //   () => {
-            //     db.all(` select blog_id, blog_txt from blog`, (err, rows) => {
-            //       res.render('index', { title: 'Express', data: rows });
-            //     });
-            //   });
             console.log("Creating table and inserting some sample data");
             db.exec(`create table blog (
                      blog_id INTEGER PRIMARY KEY AUTOINCREMENT,
                      blog_title text NOT NULL,
-                     blog_txt text NOT NULL);
+                     blog_txt text NOT NULL
+                     );
                       insert into blog (blog_title, blog_txt)
                       values ('This is a great blog','Oh my goodness blogging is fun');`,
               () => {
@@ -50,12 +39,8 @@ router.get('/', function (req, res, next) {
     });
 });
 
-function sanitizer(text){
-  let value = text.toLowerCase();
-  console.log(value);
-  if(value.includes("drop table"))
-    return "Nice try";
-  return text;
+function sanitized(text){
+  return true;
 }
 
 /**Add function */
@@ -68,62 +53,45 @@ router.post('/add', (req, res, next) => {
         console.log("Getting error " + err);
         exit(1);
       }
-      console.log("inserting " + req.body.blog);
       //NOTE: This is dangerous! you need to sanitize input from the user
       //this is ripe for a exploit! DO NOT use this in production :)
       //Try and figure out how why this is unsafe and how to fix it.
       //HINT: the answer is in the XKCD comic on the home page little bobby tables :)
 
-      let title = sanitizer(req.body.title);
-      let text = sanitizer(req.body.text)
-      db.exec(`insert into blog (blog_title, blog_txt)
-                values ('${title}', '${text}');`)
+      let titleIsGood = sanitized(req.body.newtitle);
+      let textIsGood = sanitized(req.body.newtext);
+      if(titleIsGood && textIsGood){
+        db.exec(`insert into blog (blog_title, blog_txt)
+                values ('${req.body.newtitle}', '${req.body.newtext}');`)
+      }
       //redirect to homepage
       res.redirect('/');
     }
   );
 })
 
-router.post('/delete', (req, res, next) => {
-  console.log("deleting stuff without checking if it is valid! SEND IT!");
-  var db = new sqlite3.Database('mydb.sqlite3',
-    sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
-    (err) => {
-      if (err) {
-        console.log("Getting error " + err);
-        exit(1);
-      }
-      console.log("inserting " + req.body.blog);
-      //NOTE: This is dangerous! you need to sanitize input from the user
-      //this is ripe for a exploit! DO NOT use this in production :)
-      //Try and figure out how why this is unsafe and how to fix it.
-      //HINT: the answer is in the XKCD comic on the home page little bobby tables :)
-      db.exec(`delete from blog where blog_id='${req.body.id}';`);     
-      res.redirect('/');
+router.post('/handle_user', (req, res, next) => {
+console.log("updating stuff without checking if it is valid! SEND IT! handle_user");
+var db = new sqlite3.Database('mydb.sqlite3',
+  sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
+  (err) => {
+    if (err) {
+      console.log("Getting error " + err);
+      exit(1);
     }
-  );
-})
 
-router.post('/update', (req, res, next) => {
-  console.log("updating stuff without checking if it is valid! SEND IT!");
-  var db = new sqlite3.Database('mydb.sqlite3',
-    sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
-    (err) => {
-      if (err) {
-        console.log("Getting error " + err);
-        exit(1);
+    if(req.body.delete == "delete"){
+      db.exec(`delete from blog where blog_id='${req.body.id}';`);
+    } else if( req.body.update == "update") {
+      let titleIsGood = sanitized(req.body.title);
+      let textIsGood = sanitized(req.body.text)
+      if(titleIsGood && textIsGood){
+        db.exec(`UPDATE blog Set blog_title = '${req.body.title}', blog_txt = '${req.body.text}' where blog_id='${req.body.id}';`);
       }
-      console.log("inserting " + req.body.blog);
-      //NOTE: This is dangerous! you need to sanitize input from the user
-      //this is ripe for a exploit! DO NOT use this in production :)
-      //Try and figure out how why this is unsafe and how to fix it.
-      //HINT: the answer is in the XKCD comic on the home page little bobby tables :)
-
-      let title = sanitizer(req.body.blog_title);
-      let text = sanitizer(req.body.blog_txt)
-      db.exec(`UPDATE blog Set blog_title = '${title}', blog_txt = '${text}' where blog_id='${req.body.id}';`);     
-      res.redirect('/');
+      
     }
+    res.redirect('/');
+  }
   );
 })
 

@@ -1,8 +1,76 @@
 body {
+  background-color: gray;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+h1{ 
+  font-size: 16px;
+  font-family: arial;
+  font-style: italic;
+  color: rgb(255, 255, 255);
+}
+
 a {
   color: #00B7FF;
+}
+
+.contentBox{
+  background-color: rgb(255, 255, 255);
+  width: 600px;
+  min-height: 250px;
+  margin: 25px auto;
+
+  display: flex;
+  flex-direction:column;
+
+}
+
+.contentBoxTitle{
+  /* background-color: rgb(0, 55, 161); */
+  width: 95%;
+  height: 40px;
+  margin: 0 auto;
+  /* text-align: center; */
+  display: flex;
+  justify-content:center;
+
+  border-bottom-color: #d900ff;
+  border-bottom-style: dotted;
+}
+
+.contentBoxText{
+  /* background-color: rgb(171, 68, 68); */
+  width: 95%;
+  min-height: 200px;
+  margin: 5px auto;
+  overflow-wrap: break-word;
+}
+
+textarea{
+  width: 100%;
+  height: 200px;
+  box-sizing: border-box;
+  
+  resize: none;
+  border-style: none;
+  margin: auto;
+
+  border-radius: 10px;
+  border-color:  #d900ff;
+  border-style:double;
+}
+
+#title{
+  width: 500px;
+  height: 25px;
+  text-align: center;
+  padding: 5px;
+}
+
+#newtitle{
+  width: 500px;
+  height: 25px;
+  text-align: center;
+  padding: 5px;
 }

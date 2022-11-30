@@ -1,19 +1,25 @@
 extends layout
 
 block content
-
-  form(action="/add", method='POST')
-    .contentBox
+    
+  .contentBox
+    form(action="/add", method='POST')
       .contentBoxTitle
-        label(for="title") Post title: 
-        input(name="title" id="title")
+        textarea(name="newtitle" id="newtitle" placeholder="Post title:" )
       .contentBoxText
-        textarea(name="text", id="text", cols="30", rows="10") 
-    input(type="submit" value="Post")
+        textarea(name="newtext", id="newtext" placeholder="What is on your mind?")
+      input(type="submit" value="Post")
 
   each value in data
-    .contentBox
-      .contentBoxTitle
-        p #{value.blog_title}
-      .contentBoxText
-        p #{value.blog_txt}
+    .contentBox 
+      div(id=value.blog_id)
+        form(action="/handle_user", method='POST' )
+          input(type="hidden" id="id" name="id" value=value.blog_id)
+          .contentBoxTitle
+            textarea( name="title" id="title" placeholder="Post title:" readonly) #{value.blog_title}
+          .contentBoxText
+            textarea(name="text", id="text" placeholder="What is on your mind?" readonly) #{value.blog_txt}
+          input(type="submit" id="delete" name="delete" value="delete" onclick="return confirm('Do you really want to delete the form?');")
+          input(type="hidden" id="update" name="update" value="update" onclick="return confirm('Do you really want to update the form?');")
+        button(id="edit" name="edit" onclick='clickme('+value.blog_id+')') Edit
+          script(src='/javascripts/change.js')
