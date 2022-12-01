@@ -19,7 +19,8 @@ block content
             textarea( name="title" id="title" placeholder="Post title:" readonly) #{value.blog_title}
           .contentBoxText
             textarea(name="text", id="text" placeholder="What is on your mind?" readonly) #{value.blog_txt}
-          input(type="submit" id="delete" name="delete" value="delete" onclick="return confirm('Do you really want to delete the form?');")
-          input(type="hidden" id="update" name="update" value="update" onclick="return confirm('Do you really want to update the form?');")
-        button(id="edit" name="edit" onclick='clickme('+value.blog_id+')') Edit
-          script(src='/javascripts/change.js')
+        
+          button(type="button" id="cancelButton" name="cancelButton" onClick="history.go(0);" hidden) Cancel
+          input(type="submit" id="update" name="update" value="Delete" )
+          button(type="button" id="edit" name="edit" onclick='clickme('+value.blog_id+')') Edit
+            script(src='/javascripts/change.js')

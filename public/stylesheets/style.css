@@ -1,29 +1,25 @@
 body {
-  background-color: gray;
+  background-color: rgb(141, 161, 185);
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-h1{ 
-  font-size: 16px;
-  font-family: arial;
-  font-style: italic;
-  color: rgb(255, 255, 255);
-}
-
-a {
-  color: #00B7FF;
-}
-
 .contentBox{
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(219, 199, 190);
   width: 600px;
   min-height: 250px;
   margin: 25px auto;
+  padding: 10px;
 
   display: flex;
   flex-direction:column;
 
+  border-radius: 10px;
+  border-color:  rgb(0, 50, 73);
+  border-style:ridge;
+  border-width: 2px;
+
+  
 }
 
 .contentBoxTitle{
@@ -35,7 +31,7 @@ a {
   display: flex;
   justify-content:center;
 
-  border-bottom-color: #d900ff;
+  border-bottom-color: rgb(0, 50, 73);
   border-bottom-style: dotted;
 }
 
@@ -55,9 +51,12 @@ textarea{
   resize: none;
   border-style: none;
   margin: auto;
+  padding: 5px;
+
+  color: rgb(0, 50, 73);
 
   border-radius: 10px;
-  border-color:  #d900ff;
+  border-color:  rgb(0, 50, 73);
   border-style:double;
 }
 
@@ -73,4 +72,14 @@ textarea{
   height: 25px;
   text-align: center;
   padding: 5px;
+}
+
+
+
+button{
+  color: rgb(0, 50, 73);
+}
+
+form input[type=submit]{
+  color: rgb(0, 50, 73);
 }

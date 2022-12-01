@@ -31,7 +31,7 @@ router.get('/', function (req, res, next) {
                       values ('This is a great blog','Oh my goodness blogging is fun');`,
               () => {
                 db.all(` select blog_id, blog_title, blog_txt from blog`, (err, rows) => {
-                  res.render('index', { title: 'Express', data: rows });
+                  res.render('index', { title: 'Express', data: rows.reverse() });
                 });
               });
           }
@@ -40,7 +40,12 @@ router.get('/', function (req, res, next) {
 });
 
 function sanitized(text){
-  return true;
+  if(text.length >= 1){
+
+    return true;
+  }
+    
+  return false;
 }
 
 /**Add function */
@@ -61,11 +66,21 @@ router.post('/add', (req, res, next) => {
       let titleIsGood = sanitized(req.body.newtitle);
       let textIsGood = sanitized(req.body.newtext);
       if(titleIsGood && textIsGood){
+        var title = req.body.newtitle.charAt(0).toUpperCase() + req.body.newtitle.slice(1);
+        var text = req.body.newtext.charAt(0).toUpperCase() + req.body.newtext.slice(1);
         db.exec(`insert into blog (blog_title, blog_txt)
-                values ('${req.body.newtitle}', '${req.body.newtext}');`)
+                values ('${title}', '${text}');`);
+        //redirect to homepage
+        res.redirect('/');
+        
+      } else{
+        console.log("No Content???");
+        //redirect to homepage
+        res.redirect('/');
       }
-      //redirect to homepage
-      res.redirect('/');
+
+      
+      
     }
   );
 })
@@ -80,9 +95,12 @@ var db = new sqlite3.Database('mydb.sqlite3',
       exit(1);
     }
 
-    if(req.body.delete == "delete"){
+    if(req.body.update == "Delete"){
+      console.log(req.body.update);
       db.exec(`delete from blog where blog_id='${req.body.id}';`);
-    } else if( req.body.update == "update") {
+
+    } else if( req.body.update == "Update") {
+      console.log("deleted "+ req.body.update);
       let titleIsGood = sanitized(req.body.title);
       let textIsGood = sanitized(req.body.text)
       if(titleIsGood && textIsGood){
